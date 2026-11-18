@@ -1,0 +1,17 @@
+.rr-menu {
+  position: fixed;
+  z-index: 2147483647;
+  max-height: 280px;
+  overflow-y: auto;
+  background: #fff;
+  color: #222;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  font: 14px/1.35 system-ui, sans-serif;
+}
+.rr-item { padding: 8px 12px; cursor: pointer; }
+.rr-item.rr-active { background: #e8f0fe; }
+.rr-title { font-weight: 600; }
+.rr-preview { color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rr-empty { padding: 10px 12px; color: #666; }

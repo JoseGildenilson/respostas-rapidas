@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Respostas Rápidas</title>
+  <style>
+    body { max-width: 760px; margin: 24px auto; padding: 0 16px; font: 15px/1.4 system-ui, sans-serif; color: #222; }
+    h1 { font-size: 20px; }
+    label { display: block; margin: 10px 0 4px; font-weight: 600; }
+    input[type=text], textarea { width: 100%; box-sizing: border-box; padding: 8px; font: inherit; border: 1px solid #bbb; border-radius: 6px; }
+    textarea { min-height: 110px; resize: vertical; }
+    button { padding: 7px 14px; margin: 10px 6px 0 0; cursor: pointer; }
+    .item { border: 1px solid #ddd; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
+    .item .t { font-weight: 600; }
+    .item .p { color: #555; white-space: pre-wrap; margin: 4px 0 6px; max-height: 4.2em; overflow: hidden; }
+    .row { margin-top: 24px; }
+    #msg { color: #2a7; margin-left: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Respostas Rápidas</h1>
+
+  <label for="title">Título (usado na busca)</label>
+  <input type="text" id="title" placeholder="Ex.: Reiniciar roteador">
+
+  <label for="text">Mensagem</label>
+  <textarea id="text" placeholder="Texto que será inserido no chat"></textarea>
+
+  <button id="save">Salvar</button>
+  <button id="cancel" hidden>Cancelar edição</button>
+  <span id="msg"></span>
+
+  <div class="row">
+    <strong>Mensagens salvas (<span id="count">0</span>)</strong>
+    <div id="list"></div>
+  </div>
+
+  <div class="row">
+    <button id="export">Exportar JSON</button>
+    <button id="import">Importar JSON</button>
+    <input type="file" id="file" accept="application/json" hidden>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

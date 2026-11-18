@@ -1,0 +1,12 @@
+{
+  "addons": {
+    "respostas-rapidas@local": {
+      "updates": [
+        {
+          "version": "1.0.0",
+          "update_link": "https://raw.githubusercontent.com/JoseGildenilson/respotas-rapidas/main/respostas-rapidas.xpi"
+        }
+      ]
+    }
+  }
+}
