@@ -79,13 +79,22 @@
       items.forEach((s, i) => {
         const el = document.createElement('div');
         el.className = 'rr-item' + (i === active ? ' rr-active' : '');
+        const head = document.createElement('div');
+        head.className = 'rr-head';
         const t = document.createElement('div');
         t.className = 'rr-title';
         t.textContent = s.title;
+        head.appendChild(t);
+        if (s.shortcut && s.shortcut.label) {
+          const kbd = document.createElement('kbd');
+          kbd.className = 'rr-kbd';
+          kbd.textContent = s.shortcut.label;
+          head.appendChild(kbd);
+        }
         const p = document.createElement('div');
         p.className = 'rr-preview';
         p.textContent = s.text.replace(/\s+/g, ' ');
-        el.append(t, p);
+        el.append(head, p);
         el.addEventListener('click', () => choose(i));
         el.addEventListener('mousemove', () => {
           if (active !== i) {
@@ -101,24 +110,44 @@
     menu.querySelector('.rr-active')?.scrollIntoView({ block: 'nearest' });
   }
 
+  function insertText(target, text, replaceStart) {
+    if (!target) return;
+    target.focus();
+    const start = typeof replaceStart === 'number' ? replaceStart : target.selectionStart;
+    const end = target.selectionEnd;
+    target.setSelectionRange(start, end);
+    inserting = true;
+    let ok = false;
+    try {
+      ok = document.execCommand('insertText', false, text);
+    } catch (_) {}
+    if (!ok) {
+      target.setRangeText(text, start, end, 'end');
+      target.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    inserting = false;
+  }
+
   function choose(i) {
     const s = items[i];
     const start = startIdx;
     close();
     if (!s || !field) return;
+    insertText(field, s.text, start);
+  }
 
-    field.focus();
-    field.setSelectionRange(start, field.selectionStart);
-    inserting = true;
-    let ok = false;
-    try {
-      ok = document.execCommand('insertText', false, s.text);
-    } catch (_) {}
-    if (!ok) {
-      field.setRangeText(s.text, start, field.selectionEnd, 'end');
-      field.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-    inserting = false;
+  function matchShortcut(e) {
+    if (e.metaKey || (!e.ctrlKey && !e.altKey)) return null;
+    return (
+      snippets.find(
+        (s) =>
+          s.shortcut &&
+          s.shortcut.code === e.code &&
+          Boolean(s.shortcut.ctrl) === e.ctrlKey &&
+          Boolean(s.shortcut.alt) === e.altKey &&
+          Boolean(s.shortcut.shift) === e.shiftKey
+      ) || null
+    );
   }
 
   document.addEventListener(
@@ -140,6 +169,20 @@
   document.addEventListener(
     'keydown',
     (e) => {
+      const matched = matchShortcut(e);
+      if (matched) {
+        const target = e.target && e.target.id === FIELD_ID ? e.target : document.getElementById(FIELD_ID);
+        if (target && !target.disabled && !target.readOnly) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          const replaceStart = menu && target === field && startIdx >= 0 ? startIdx : undefined;
+          close();
+          field = target;
+          insertText(target, matched.text, replaceStart);
+          return;
+        }
+      }
+
       if (!menu || e.target !== field) return;
       const stop = () => {
         e.preventDefault();
